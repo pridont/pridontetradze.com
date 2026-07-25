@@ -1,23 +1,24 @@
 ---
 layout: "base.njk"
-title: Blog
-description: "Notes on code, the mind, and the space in between."
 image: "/assets/images/cover.jpg"
 pagination:
   data: collections.tagList
   size: 1
   alias: tag
 permalink: /tags/{{ tag }}/
+eleventyComputed:
+  title: "Posts tagged {{ tag }}"
+  description: "All posts on pridontetradze.com tagged {{ tag }}."
 ---
 
 <div class="ledger">
   <section class="section">
-    <div class="section__index">— writing</div>
+    <div class="section__index">— {{ tag }}</div>
     <div class="section__body">
-      <h1 class="writing__title">Writing</h1>
+      <h1 class="writing__title">Tagged “{{ tag }}”</h1>
       <p class="writing__sub measure">
-        Notes on code, the mind, and the space in between. Mostly written to
-        think out loud.
+        Every post filed under {{ tag }}. Browse all writing on the
+        <a href="/blog/">blog</a>.
       </p>
       <p class="writing__hint">↹ tab through post titles — focused headings show a ring</p>
       {%- include "tags-list.njk" -%}

@@ -2,7 +2,7 @@
 title: "On Purpose of Prayer"
 date: 2026-07-23
 description: "For the longest time in my life, I misunderstood the purpose of prayer."
-image: "/assets/images/athos.jpg"
+image: "/assets/images/athos.webp"
 imageAlt: "Father Jerome in Xenophontos Monastery, next to the shelves of skulls of monks"
 tags:
  - post

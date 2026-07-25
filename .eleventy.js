@@ -11,6 +11,7 @@ const mdTableOfContents = require("markdown-it-table-of-contents");
 const mdHighlightjs = require("markdown-it-highlightjs");
 const linksPlugin = require("./md-plugins/links");
 const bibListPlugin = require("./md-plugins/bib-list.js");
+const lazyImagesPlugin = require("./md-plugins/lazy-images.js");
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("./src/assets");
@@ -53,6 +54,16 @@ module.exports = function (eleventyConfig) {
     return out;
   });
   eleventyConfig.addWatchTarget("./src/scripts");
+
+  // The CSS/JS caches above live for the whole process, which spans every
+  // watch rebuild under `--serve`. Without this they'd hand back the stale
+  // minified string after an edit, so a `--serve` session would never show CSS
+  // or JS changes. Clear them before each rebuild; the one-shot `build` is
+  // unaffected (beforeWatch never fires).
+  eleventyConfig.on("eleventy.beforeWatch", () => {
+    cssCache.clear();
+    jsCache.clear();
+  });
 
   // Node modules
   eleventyConfig.addPassthroughCopy({
@@ -278,6 +289,7 @@ module.exports = function (eleventyConfig) {
 
   md.use(linksPlugin);
   md.use(bibListPlugin);
+  md.use(lazyImagesPlugin);
 
   md.use(mdHighlightjs, { auto: false });
 

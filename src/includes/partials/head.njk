@@ -3,6 +3,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  {# theme-color sits here — before the pre-paint script — so that script can
+     point it at the resolved theme immediately, keeping the mobile browser
+     chrome from flashing dark on a light-theme load (and vice versa). A single
+     meta is deliberate: theme/index.js rewrites this same element's content on
+     toggle, so media-scoped duplicates would fight the manual override. #}
+  <meta name="theme-color" content="#17131c">
+
   {# Set the theme on <html> before any paint to avoid a flash of the wrong theme. #}
   <script>
     (function () {
@@ -13,6 +20,8 @@
             ? "dark"
             : "light");
         if (t === "light") document.documentElement.classList.add("light");
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute("content", t === "light" ? "#f1ecf1" : "#17131c");
       } catch (e) {}
     })();
   </script>
@@ -54,7 +63,6 @@
   {% endif %}
   {% if "/music" in page.url %}
     <style>{{ "elements/music.css" | inlineCss | safe }}</style>
-    <script src="https://kit.fontawesome.com/5e50b52fe3.js" crossorigin="anonymous"></script>
     <script src="/wavesurfer.js" type="module"></script>
     <script defer src="/scripts/music.js" type="module"></script>
   {% endif %}
@@ -72,11 +80,26 @@
     <meta name="robots" content="noindex, follow">
   {% endif %}
 
+  {# Social / SEO. Images must be absolute for every scraper (og:image is
+     ignored when relative). Fall back to the site defaults so a page that
+     forgets its own image/description never ships an empty tag. #}
+  {%- set isArticle = "/blog/" in page.url and page.url !== "/blog/" -%}
+  {%- set ogImage = (image or site.defaultImage) | absoluteUrl(site.url) -%}
+  {%- set ogDesc = description or site.description -%}
+
+  <meta property="og:site_name" content="Pridon Tetradze">
+  <meta property="og:type" content="{% if isArticle %}article{% else %}website{% endif %}">
   <meta property="og:title" content="{{ title }}">
-  <meta property="og:image" content="{{ image }}">
-  <meta property="og:description" content="{{ description }}">
+  <meta property="og:image" content="{{ ogImage }}">
+  <meta property="og:description" content="{{ ogDesc }}">
   <meta property="og:url" content="{{ page.url | absoluteUrl(site.url) }}">
-  <meta name="description" content="{{ description }}">
-  <meta name="theme-color" content="#17131c">
+  {% if isArticle %}<meta property="article:published_time" content="{{ page.date | dateToRfc3339 }}">{% endif %}
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ title }}">
+  <meta name="twitter:description" content="{{ ogDesc }}">
+  <meta name="twitter:image" content="{{ ogImage }}">
+
+  <meta name="description" content="{{ ogDesc }}">
   <title>{{ title }} {% if title %} | {% endif %} Pridon Tetradze</title>
 </head>

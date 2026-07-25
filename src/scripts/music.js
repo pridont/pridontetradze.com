@@ -2,8 +2,11 @@
  * Music Player Functionality
  */
 
-const PLAY_ICON = `<i class="fa-solid fa-play"></i>`;
-const PAUSE_ICON = `<i class="fa-solid fa-pause"></i>`;
+// Inline SVGs (fill: currentColor, 1em box) replace the old FontAwesome kit —
+// the whole CDN script was pulled in for just these two glyphs. They inherit the
+// button's `color`/hover styles unchanged.
+const PLAY_ICON = `<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>`;
+const PAUSE_ICON = `<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>`;
 const containerEl = document.getElementById("music-list");
 
 class MusicTrack {
@@ -24,21 +27,28 @@ class MusicTrack {
     this.loadingElement = loadingElement;
   }
 
+  // The button's playing/paused state lives in a data attribute rather than
+  // being sniffed out of the icon markup (the inline SVG has no "play"
+  // substring to match on).
+  #setPlaying(playing) {
+    this.playBtn.innerHTML = playing ? PAUSE_ICON : PLAY_ICON;
+    this.playBtn.dataset.state = playing ? "playing" : "paused";
+    this.playBtn.setAttribute("aria-label", playing ? "Pause" : "Play");
+  }
+
   playPause() {
     this.wavesurfer.playPause();
-    this.playBtn.innerHTML = this.playBtn.innerHTML.includes("play")
-      ? PAUSE_ICON
-      : PLAY_ICON;
+    this.#setPlaying(this.playBtn.dataset.state !== "playing");
   }
 
   pause() {
     this.wavesurfer.pause();
-    this.playBtn.innerHTML = PLAY_ICON;
+    this.#setPlaying(false);
   }
 
   play() {
     this.wavesurfer.play();
-    this.playBtn.innerHTML = PAUSE_ICON;
+    this.#setPlaying(true);
   }
 
   initWavesurfer() {
@@ -84,6 +94,9 @@ class MusicTrack {
 
     const playBtn = document.createElement("button");
     playBtn.classList.add("play");
+    playBtn.type = "button";
+    playBtn.dataset.state = "paused";
+    playBtn.setAttribute("aria-label", "Play");
     playBtn.innerHTML = PLAY_ICON;
 
     const playerElement = document.createElement("div");

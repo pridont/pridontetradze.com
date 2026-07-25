@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+{# Georgian-titled posts declare lang="ka" so screen readers pick the right
+   voice; a page may override with an explicit `lang` in front matter. #}
+<html lang="{{ lang or ('ka' if (title | hasGeorgian) else 'en') }}">
   {% include "head.njk" %}
   {%- set accentClass = "" -%}
   {%- if tags -%}

@@ -2,7 +2,7 @@
 title: "Make internet boring again"
 description: "I started using internet the old-fashioned way and my quality of life has improved."
 author: "Pridon Tetradze"
-image: "/assets/images/mountain.jpg"
+image: "/assets/images/mountain.webp"
 date: 2026-07-20
 tags:
   - post

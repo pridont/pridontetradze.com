@@ -5,3 +5,16 @@
   from = "/feed/"
   to = "/feed.xml"
   status = 200
+
+# Security headers. The site inlines all its own CSS/JS, so 'unsafe-inline' is
+# unavoidable for style/script; everything else is locked down. img-src allows
+# any https host for the remote post covers (imgur/ytimg/angular.dev); the
+# Google Fonts hosts are whitelisted for style-src/font-src.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; media-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'none'"
