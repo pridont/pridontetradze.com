@@ -9,9 +9,10 @@ const markdownItBiblatex = require("@arothuis/markdown-it-biblatex");
 const mdAnchor = require("markdown-it-anchor");
 const mdTableOfContents = require("markdown-it-table-of-contents");
 const mdHighlightjs = require("markdown-it-highlightjs");
-const linksPlugin = require("./md-plugins/links");
-const bibListPlugin = require("./md-plugins/bib-list.js");
-const lazyImagesPlugin = require("./md-plugins/lazy-images.js");
+const linksPlugin = require("./lib/md-plugins/links");
+const bibListPlugin = require("./lib/md-plugins/bib-list.js");
+const lazyImagesPlugin = require("./lib/md-plugins/lazy-images.js");
+const images = require("./lib/images.js");
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("./src/assets");
@@ -64,6 +65,31 @@ module.exports = function (eleventyConfig) {
     cssCache.clear();
     jsCache.clear();
   });
+
+  // Responsive image variants are written before anything renders, so the sync
+  // helpers used by the `image` shortcode and the markdown renderer can trust
+  // the files exist. See lib/images.js.
+  eleventyConfig.on("eleventy.before", images.generateAll);
+
+  // <picture> with AVIF + WebP sources and intrinsic width/height, for local
+  // images. Remote covers (imgur/ytimg/angular.dev) aren't ours to re-encode,
+  // so they fall through to a plain <img> with the same attributes.
+  eleventyConfig.addShortcode("image", (src, alt, sizes, attrs = {}) => {
+    if (!src) return "";
+    const common = { alt: alt || "", sizes, ...attrs };
+    const html = images.picture(src, common);
+    if (html) return html;
+    const extra = Object.entries(attrs)
+      .map(([k, v]) => ` ${k}="${v}"`)
+      .join("");
+    return `<img src="${src}" alt="${common.alt}"${extra}>`;
+  });
+
+  // <link rel="preload"> for a local cover so the LCP image is discovered in
+  // <head> rather than after ~17KB of inlined CSS. Empty for remote images.
+  eleventyConfig.addFilter("imagePreload", (src, sizes) =>
+    images.preloadLink(src, sizes),
+  );
 
   // Node modules
   eleventyConfig.addPassthroughCopy({

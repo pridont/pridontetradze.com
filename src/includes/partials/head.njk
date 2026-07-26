@@ -1,4 +1,8 @@
 <head>
+  {# Set once and reused below for the cover preload, the article stylesheet
+     block and the og:type — /blog/ itself is the index, not a post. #}
+  {%- set isArticle = "/blog/" in page.url and page.url !== "/blog/" -%}
+
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -29,11 +33,40 @@
   {# --- Fonts --- #}
   {# Load Google Fonts non-render-blocking: the print media type keeps the
      stylesheet off the critical path, then onload flips it to all. display=swap
-     paints fallback text immediately, so no new flash is introduced. #}
+     paints fallback text immediately, so no new flash is introduced.
+
+     The rel=preload in front of each sheet is what makes that affordable.
+     media="print" on its own drops the request to the lowest fetch priority,
+     so the fonts arrive long after first paint and the swap is guaranteed to
+     be visible; the preload restores a normal priority without putting the
+     cross-origin request back on the critical path.
+
+     Two requests, not one: only the Georgian family can be usefully subset.
+     Both URLs are assembled in src/data/fonts.js — see the note there on the
+     &text= subset, which cuts Noto Sans Georgian from 41.5KB to 15.7KB on
+     every page. #}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="style" href="{{ fonts.latin }}">
+  <link rel="stylesheet" href="{{ fonts.latin }}" media="print" onload="this.media='all'">
+  {%- if fonts.georgian %}
+  <link rel="preload" as="style" href="{{ fonts.georgian }}">
+  <link rel="stylesheet" href="{{ fonts.georgian }}" media="print" onload="this.media='all'">
+  {%- endif %}
+  <noscript>
+    <link rel="stylesheet" href="{{ fonts.latin }}">
+    {%- if fonts.georgian %}
+    <link rel="stylesheet" href="{{ fonts.georgian }}">
+    {%- endif %}
+  </noscript>
+
+  {# --- LCP cover --- #}
+  {# Preloaded here rather than left for the parser to find in the article
+     body, which sits behind ~17KB of inlined CSS. Only emits for self-hosted
+     covers; remote ones (imgur/ytimg) have no generated variants. #}
+  {%- if isArticle and image %}
+  {{ image | imagePreload | safe }}
+  {%- endif %}
 
   {# --- Design tokens + base (always), inlined + minified to avoid render-blocking requests --- #}
   <style>{{ "tokens.css" | inlineCss | safe }}{{ "main.css" | inlineCss | safe }}</style>
@@ -54,8 +87,10 @@
   {% if page.url === "/blog/" or "/tags/" in page.url %}
     <style>{{ "elements/writing.css" | inlineCss | safe }}</style>
   {% endif %}
-  {% if "/blog/" in page.url and page.url !== "/blog/" %}
-    <style>{{ "elements/article.css" | inlineCss | safe }}{{ "highlight-theme.css" | inlineCss | safe }}</style>
+  {% if isArticle %}
+    {# The syntax theme only earns its 2KB on posts that actually have a code
+       block — several don't, and keying on the URL shipped it to all of them. #}
+    <style>{{ "elements/article.css" | inlineCss | safe }}{% if "<pre" in (content | string) %}{{ "highlight-theme.css" | inlineCss | safe }}{% endif %}</style>
   {% endif %}
   {% if "/cats" in page.url %}
     <style>{{ "elements/cats.css" | inlineCss | safe }}</style>
@@ -83,7 +118,6 @@
   {# Social / SEO. Images must be absolute for every scraper (og:image is
      ignored when relative). Fall back to the site defaults so a page that
      forgets its own image/description never ships an empty tag. #}
-  {%- set isArticle = "/blog/" in page.url and page.url !== "/blog/" -%}
   {%- set ogImage = (image or site.defaultImage) | absoluteUrl(site.url) -%}
   {%- set ogDesc = description or site.description -%}
 

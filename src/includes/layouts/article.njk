@@ -20,7 +20,7 @@ layout: "base.njk"
         {% endif %}
         {% if image %}
           <div class="article__cover">
-            <img src="{{ image }}" alt="{{ imageAlt or title }}" fetchpriority="high" loading="eager" />
+            {% image image, imageAlt or title, null, { loading: "eager", decoding: "async", fetchpriority: "high" } %}
           </div>
         {% endif %}
       </div>

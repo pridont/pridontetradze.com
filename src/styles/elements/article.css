@@ -95,6 +95,14 @@
   margin: 2.25rem 0 0.5rem;
 }
 
+/* Self-hosted covers ship as <picture>, which is inline by default — without
+   this the block-level <img> inside it sits on a text baseline and leaves a
+   descender gap under the image. */
+.article__cover picture,
+.prose picture {
+  display: block;
+}
+
 .article__cover img {
   display: block;
   width: 100%;
