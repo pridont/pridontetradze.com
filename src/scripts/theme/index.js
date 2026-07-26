@@ -10,6 +10,21 @@ export function themeSwitch() {
   const buttons = document.querySelectorAll(".theme-toggle");
   const themeMeta = document.querySelector('meta[name="theme-color"]');
 
+  // Both colours are read once, up front, and cached. Reading them inside
+  // apply() meant a getComputedStyle immediately after the class toggle had
+  // invalidated style — a read-after-write that forces a synchronous style
+  // recalc on load and on every toggle (Lighthouse flags it as a forced
+  // reflow). Here nothing has been invalidated yet, so the read is free.
+  //
+  // --ink-bg and --paper-bg both live unconditionally on :root (tokens.css),
+  // not inside the .light block, so one read gets both regardless of the
+  // theme currently applied.
+  const rootStyle = getComputedStyle(document.documentElement);
+  const colors = {
+    light: rootStyle.getPropertyValue("--paper-bg").trim() || "#f1ecf1",
+    dark: rootStyle.getPropertyValue("--ink-bg").trim() || "#17131c",
+  };
+
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const saved = localStorage.getItem("theme");
   apply(saved || (prefersDark ? "dark" : "light"));
@@ -27,13 +42,8 @@ export function themeSwitch() {
   function apply(theme) {
     const isLight = theme === "light";
     document.documentElement.classList.toggle("light", isLight);
-
     if (themeMeta) {
-      const style = getComputedStyle(document.body);
-      const color = style
-        .getPropertyValue(isLight ? "--paper-bg" : "--ink-bg")
-        .trim();
-      themeMeta.setAttribute("content", color || (isLight ? "#f1ecf1" : "#17131c"));
+      themeMeta.setAttribute("content", isLight ? colors.light : colors.dark);
     }
   }
 }

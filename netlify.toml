@@ -23,18 +23,20 @@
 # applies to every image, script and font — each one costs a revalidation round
 # trip on every visit despite never changing between deploys.
 #
-# A day is deliberately short: /assets/ filenames are stable, so overwriting an
-# image in place is safe and stale clients catch up within 24h. /img/ variants
-# are content-hashed by eleventy-img and could safely take max-age=31536000,
-# immutable — the conservative value here is a choice, not a constraint. HTML is
-# left on the default so published content is never stale.
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=86400"
-
+# /img/ filenames are content-hashed by eleventy-img — a changed source means a
+# changed URL — so a year with immutable carries no staleness risk at all and
+# repeat visitors skip the revalidation entirely.
+#
+# /assets/ filenames are stable by contrast, so overwriting a file in place has
+# to stay safe: a day caps how long a client can hold the old bytes. HTML is
+# left on the Netlify default so published content is never stale.
 [[headers]]
   for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=86400"
 
