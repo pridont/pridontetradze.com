@@ -6,8 +6,8 @@ description: Psychology of set – a field founded by Georgian psychologist
 author: Pridon Tetradze
 authorPage: https://pridontetradze.com
 date: 2022-08-27T16:53:03.214Z
-videoUrl: https://www.youtube.com/watch?v=cBYW_KiY19A
-image: https://i.ytimg.com/vi/cBYW_KiY19A/hq720.jpg
+image: /assets/images/kakabadze.webp
+imageAlt: "Painting of D. Kakabadze. Imereti: My Mother. 1918. Oil on canvas"
 tags:
   - post
   - academic
@@ -198,7 +198,7 @@ On the first level, we encounter an _impulsive_ behavior. The behavior is, in th
 
 If we were to display the first level of activity on a chart, it would look like this:
 
-![](/assets/images/set-chart.png)
+![](/assets/images/set-chart.svg)
 
 Structure of the first level of psychic activity [@nadirashvili83{translated from}].
 

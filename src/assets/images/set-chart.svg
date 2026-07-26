@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1118 668" width="1118" height="668" role="img" aria-labelledby="setChartTitle setChartDesc">
+  <title id="setChartTitle">Uznadze's set (ustanovka) model</title>
+  <desc id="setChartDesc">Need, situation (object) and operational capacity feed into set; set is modulated by feeling and produces behavior, which feeds back into both set and the situation.</desc>
+
+  <defs>
+    <marker id="setChartArrow" viewBox="0 0 30 24" refX="30" refY="12"
+            markerWidth="30" markerHeight="24" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M0 0 L30 12 L0 24 Z" fill="#432d57"/>
+    </marker>
+  </defs>
+
+  <g stroke="#432d57" stroke-width="4" fill="none" marker-end="url(#setChartArrow)">
+    <!-- need <-> set -->
+    <path d="M243 271 H407"/>
+    <path d="M407 324 H243"/>
+    <!-- feeling <-> set -->
+    <path d="M498 123 V219"/>
+    <path d="M633 219 V123"/>
+    <!-- operational capacity <-> set -->
+    <path d="M243 32 L406 219"/>
+    <path d="M405 260 L243 93"/>
+    <!-- situation (object) -> set -->
+    <path d="M243 546 L406 390"/>
+    <!-- set <-> behavior -->
+    <path d="M708 280 H876"/>
+    <path d="M875 324 H707"/>
+    <!-- behavior -> situation (object) -->
+    <path d="M995 365 V648 H122.5 V607"/>
+  </g>
+
+  <g fill="#76608a" stroke="#432d57" stroke-width="4">
+    <rect x="3" y="3" width="240" height="120" rx="12"/>
+    <rect x="438" y="3" width="240" height="120" rx="12"/>
+    <rect x="3" y="245" width="240" height="120" rx="12"/>
+    <rect x="407" y="219" width="301" height="171" rx="12"/>
+    <rect x="875" y="245" width="240" height="120" rx="12"/>
+    <rect x="3" y="487" width="240" height="120" rx="12"/>
+  </g>
+
+  <g fill="#ffffff" text-anchor="middle"
+     font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace"
+     font-size="31">
+    <text x="123" y="53">operational</text>
+    <text x="123" y="93">capacity</text>
+    <text x="558" y="73">feeling</text>
+    <text x="123" y="315">need</text>
+    <text x="557" y="315">set</text>
+    <text x="995" y="315">behavior</text>
+    <text x="123" y="537">situation</text>
+    <text x="123" y="577">(object)</text>
+  </g>
+</svg>

@@ -2,7 +2,8 @@
 title: "Split Subject: Lacanian Psychoanalysis"
 author: Pridon Tetradze
 date: 2021-03-05
-image: "https://i.ytimg.com/vi/4kxZsWLi-04/hq720.jpg"
+image: "/assets/images/isaac.webp"
+imageAlt: "Sacrifice of Isaac by Caravaggio"
 description: '"I identify myself in language, but only by losing myself in it like an object." - Jacques Lacan'
 tags:
   - post
