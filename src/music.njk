@@ -11,11 +11,15 @@ image: "/assets/images/cover.jpg"
     <div class="section__body">
       <h1 class="music__title">Music</h1>
       <p class="music__sub measure">
-        I'm a guitarist of <a href="https://rkina.band" target="_blank" rel="noopener">Rkina</a>. You might see us perform heavy metal at local bars one of these days. A few of my older
+        I'm a guitarist of <a href="{{ links.rkina }}" target="_blank" rel="noopener">Rkina</a>. You might see us perform heavy metal at local bars one of these days. A few of my older
         personal tracks live on
-        <a href="https://soundcloud.com/user-25318464" target="_blank" rel="noopener">SoundCloud</a>.
+        <a href="{{ links.soundcloud }}" target="_blank" rel="noopener">SoundCloud</a>.
       </p>
-      <ul id="music-list" class="music-list"></ul>
+      {# The track list is build data (src/data/music.js) handed to the player
+         through this attribute: music.js is passthrough-copied, not templated,
+         so it cannot read globals itself. Single quotes because dump emits
+         double ones. #}
+      <ul id="music-list" class="music-list" data-tracks='{{ music | dump | safe }}'></ul>
     </div>
   </section>
 </div>

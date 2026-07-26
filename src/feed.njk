@@ -1,37 +1,40 @@
 ---
 permalink: "feed.xml"
 eleventyExcludeFromCollections: true
-metadata:
-    title: "Pridon Tetradze"
-    subtitle: "Blog"
-    language: "en"
-    url: "https://pridontetradze.com/"
-    author:
-        name: "Pridon Tetradze"
 ---
+{#- Everything the feed needs about the site comes from src/data/site.js; this
+    template used to carry its own `metadata` block re-declaring the title,
+    URL and author. The trailing slash is kept because it is what the previous
+    feed emitted for <id> and xml:base. -#}
+{%- set feedUrl = site.url + "/" -%}
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom" xml:base="{{ metadata.url }}">
-    <title>{{ metadata.title }}</title>
-    <subtitle>{{ metadata.subtitle }}</subtitle>
-    <link href="{{ permalink | absoluteUrl(metadata.url) }}" rel="self"/>
-    <link href="{{ metadata.url }}"/>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="{{ feedUrl }}">
+    <title>{{ site.name }}</title>
+    <subtitle>{{ site.feed.subtitle }}</subtitle>
+    <link href="{{ permalink | absoluteUrl(feedUrl) }}" rel="self"/>
+    <link href="{{ feedUrl }}"/>
     <updated>{{ collections.post | getNewestCollectionItemDate | dateToRfc3339 }}</updated>
-    <id>{{ metadata.url }}</id>
+    <id>{{ feedUrl }}</id>
     <author>
-        <name>{{ metadata.author.name }}</name>
+        <name>{{ site.name }}</name>
     </author>
     {%- for post in collections.post | reverse %}
-        {%- set absolutePostUrl = post.url | absoluteUrl(metadata.url) %}
+        {%- set absolutePostUrl = post.url | absoluteUrl(feedUrl) %}
         <entry>
             <title>{{ post.data.title }}</title>
             <link href="{{ absolutePostUrl }}"/>
             <updated>{{ post.date | dateToRfc3339 }}</updated>
             <id>{{ absolutePostUrl }}</id>
-            <description>
-              <img src="{{ post.data.image | absoluteUrl(metadata.url) }}" alt="thumbnail">
-              <p>{{ post.data.description }}</p>
-            </description>
-            <content xml:lang="{{ metadata.language }}" type="html">{{ post.templateContent | htmlToAbsoluteUrls(absolutePostUrl) }}</content>
+            {#- Summary only — the thumbnail and the post's own description.
+                No <content>: the full rendered body used to ship here, so the
+                feed carried the whole site and readers had no reason to visit
+                a post. An Atom entry with no content is valid precisely because
+                it links out instead.
+
+                type="html" means the markup is escaped text the reader
+                unescapes, not live XML nested in the feed — nesting it is what
+                made the raw, unclosed <img> break parsing. #}
+            <summary type="html">&lt;img src="{{ post.data.image | absoluteUrl(feedUrl) }}" alt="thumbnail" /&gt;&lt;p&gt;{{ post.data.description }}&lt;/p&gt;</summary>
         </entry>
     {%- endfor %}
 </feed>

@@ -12,7 +12,7 @@
      chrome from flashing dark on a light-theme load (and vice versa). A single
      meta is deliberate: theme/index.js rewrites this same element's content on
      toggle, so media-scoped duplicates would fight the manual override. #}
-  <meta name="theme-color" content="#17131c">
+  <meta name="theme-color" content="{{ theme.dark }}">
 
   {# Set the theme on <html> before any paint to avoid a flash of the wrong theme. #}
   <script>
@@ -25,7 +25,7 @@
             : "light");
         if (t === "light") document.documentElement.classList.add("light");
         var m = document.querySelector('meta[name="theme-color"]');
-        if (m) m.setAttribute("content", t === "light" ? "#f1ecf1" : "#17131c");
+        if (m) m.setAttribute("content", t === "light" ? "{{ theme.light }}" : "{{ theme.dark }}");
       } catch (e) {}
     })();
   </script>
@@ -121,7 +121,7 @@
   {%- set ogImage = (image or site.defaultImage) | absoluteUrl(site.url) -%}
   {%- set ogDesc = description or site.description -%}
 
-  <meta property="og:site_name" content="Pridon Tetradze">
+  <meta property="og:site_name" content="{{ site.name }}">
   <meta property="og:type" content="{% if isArticle %}article{% else %}website{% endif %}">
   <meta property="og:title" content="{{ title }}">
   <meta property="og:image" content="{{ ogImage }}">
@@ -135,5 +135,5 @@
   <meta name="twitter:image" content="{{ ogImage }}">
 
   <meta name="description" content="{{ ogDesc }}">
-  <title>{{ title }} {% if title %} | {% endif %} Pridon Tetradze</title>
+  <title>{{ title }} {% if title %} | {% endif %} {{ site.name }}</title>
 </head>

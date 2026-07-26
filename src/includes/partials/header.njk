@@ -1,13 +1,13 @@
 <header class="site-header">
   <div class="site-header__inner container">
     <a class="wordmark" href="/">
-      <span>Pridon's corner <span class="wordmark__place">· {{ page.url | shellPath }}</span></span>
+      <span>{{ site.wordmark | safe }} <span class="wordmark__place">· {{ page.url | shellPath }}</span></span>
     </a>
 
     <nav class="site-nav" aria-label="Primary">
-      <a class="site-nav__link" href="/" {% if page.url === "/" %}aria-current="page"{% endif %}>home</a>
-      <a class="site-nav__link" href="/about/" {% if "/about" in page.url %}aria-current="page"{% endif %}>about</a>
-      <a class="site-nav__link" href="/blog/" {% if "/blog" in page.url or "/tags" in page.url %}aria-current="page"{% endif %}>blog</a>
+      {%- for item in nav %}{%- if item.primary %}
+      <a class="site-nav__link" href="{{ item.href }}" {% if page.url | navCurrent(item) %}aria-current="page"{% endif %}>{{ item.label }}</a>
+      {%- endif %}{%- endfor %}
       {% include "theme-toggle.njk" %}
       <button class="menu-toggle" id="menu-open" type="button" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
@@ -21,7 +21,7 @@
 <dialog id="mobile-menu" class="mobile-menu" aria-label="Site menu">
   <div class="mobile-menu__bar container">
     <span class="wordmark">
-      <span>Pridon's corner</span>
+      <span>{{ site.wordmark | safe }}</span>
     </span>
     <div class="mobile-menu__actions">
       {% include "theme-toggle.njk" %}
@@ -33,20 +33,19 @@
     </div>
   </div>
 
+  {# Every nav entry, not just the primary ones — the mobile menu is the full
+     map of the site. Labels are stored lowercase once and title-cased here
+     rather than kept twice in the data. #}
   <nav class="mobile-menu__nav container" aria-label="Pages">
-    <a href="/" {% if page.url === "/" %}aria-current="page"{% endif %}><span class="mobile-menu__num" aria-hidden="true">00</span>Home</a>
-    <a href="/about/" {% if "/about" in page.url %}aria-current="page"{% endif %}><span class="mobile-menu__num" aria-hidden="true">01</span>About</a>
-    <a href="/blog/" {% if "/blog" in page.url or "/tags" in page.url %}aria-current="page"{% endif %}><span class="mobile-menu__num" aria-hidden="true">02</span>Blog</a>
-    <a href="/cats/" {% if "/cats" in page.url %}aria-current="page"{% endif %}><span class="mobile-menu__num" aria-hidden="true">03</span>Cats</a>
-    <a href="/music/" {% if "/music" in page.url %}aria-current="page"{% endif %}><span class="mobile-menu__num" aria-hidden="true">04</span>Music</a>
+    {%- for item in nav %}
+    <a href="{{ item.href }}" {% if page.url | navCurrent(item) %}aria-current="page"{% endif %}><span class="mobile-menu__num" aria-hidden="true">{{ item.num }}</span>{{ item.label | capitalize }}</a>
+    {%- endfor %}
   </nav>
 
   <div class="mobile-menu__find container">
     <p class="kicker">find me</p>
     <ul class="mobile-menu__links">
-      <li>{% mailLink cv.contact.email, "mail" %}</li>
-      <li><a href="{{ cv.contact.linkedin }}">linkedin</a></li>
-      <li><a href="{{ cv.contact.github }}">github</a></li>
+      {%- include "find-me.njk" -%}
     </ul>
   </div>
 
@@ -54,7 +53,7 @@
     <span>&copy; {% year %}</span>
     <span class="prayer geo">
       <span class="cross" aria-hidden="true">{%- include "cross.njk" -%}</span>
-      უფალო შეგვიწყალენ
+      {{ site.motto.mkhedruli }}
     </span>
   </footer>
 </dialog>

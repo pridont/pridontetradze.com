@@ -2,9 +2,6 @@
  * Music Player Functionality
  */
 
-// Inline SVGs (fill: currentColor, 1em box) replace the old FontAwesome kit —
-// the whole CDN script was pulled in for just these two glyphs. They inherit the
-// button's `color`/hover styles unchanged.
 const PLAY_ICON = `<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>`;
 const PAUSE_ICON = `<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>`;
 const containerEl = document.getElementById("music-list");
@@ -109,9 +106,10 @@ class MusicTrack {
   }
 }
 
-const musicList = [
-  { title: "In Neon", date: "2019-12-01", file: "in_neon.mp3" },
-];
+// The track list is build data (src/data/music.js), serialized onto the <ul>
+// by music.njk. This file is passthrough-copied rather than templated, so the
+// DOM is the only way build data reaches it.
+const musicList = JSON.parse(containerEl.dataset.tracks || "[]");
 
 const tracks = [];
 

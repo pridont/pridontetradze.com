@@ -1,7 +1,9 @@
+{# Pills come from the tagList collection, ordered by src/data/categories.js.
+   A new tag on a post shows up here on its own; the data file only decides
+   where it sits. #}
 <nav class="filter-tags" aria-label="Filter posts">
   <a class="pill{% if page.url == '/blog/' %} is-active{% endif %}" href="/blog/">all</a>
-  <a class="pill{% if '/tags/tech' in page.url %} is-active{% endif %}" href="/tags/tech/">tech</a>
-  <a class="pill{% if '/tags/academic' in page.url %} is-active{% endif %}" href="/tags/academic/">academic</a>
-  <a class="pill{% if '/tags/personal' in page.url %} is-active{% endif %}" href="/tags/personal/">personal</a>
-  <a class="pill{% if '/tags/logos' in page.url %} is-active{% endif %}" href="/tags/logos/">logos</a>
+  {%- for tag in collections.tagList | orderTags(categories.order) %}
+  <a class="pill{% if '/tags/' + tag in page.url %} is-active{% endif %}" href="/tags/{{ tag }}/">{{ tag }}</a>
+  {%- endfor %}
 </nav>

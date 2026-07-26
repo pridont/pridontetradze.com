@@ -10,17 +10,8 @@ image: "/assets/images/cover.jpg"
     <div class="section__index">— about</div>
     <div class="section__body">
       <h1 class="about__title">About</h1>
-      <p class="about__lead measure">
-        I build software for a living, and study humanities for leasure.
-        So I spend a lot of time thinking about both systems and the people who
-        use them.
-      </p>
-      <p class="about__note measure">
-        These days I do software development. On the side I read
-        psychoanalysis and theology, write music, go fishing and mushroom foraging.
-        This site is mostly a place to think out loud — hopefully, a small
-        treat on the internet for whoever happens to wander in.
-      </p>
+      <p class="about__lead measure">{{ cv.about.lead }}</p>
+      <p class="about__note measure">{{ cv.about.note }}</p>
     </div>
   </section>
 
@@ -88,7 +79,7 @@ image: "/assets/images/cover.jpg"
     <div class="section__index">05 — elsewhere</div>
     <div class="section__body">
       <ul class="pills">
-        <li><a class="pill" href="https://primordialsoup.info">psychoanalysis</a></li>
+        <li><a class="pill" href="{{ links.primordialSoup }}">psychoanalysis</a></li>
         <li><a class="pill" href="/cats/">cats</a></li>
         <li><a class="pill" href="/music/">music</a></li>
         <li><span class="pill">teaching</span></li>

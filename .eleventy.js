@@ -284,6 +284,27 @@ module.exports = function (eleventyConfig) {
     return clean ? "~" + clean : "~/";
   });
 
+  // aria-current for a src/data/nav.js entry. Each entry carries its own match
+  // rules so header.njk does not repeat a bespoke URL test per link: a plain
+  // string is a substring test, "exact:" demands the whole URL (without it,
+  // "/" would match every page).
+  eleventyConfig.addFilter("navCurrent", (pageUrl, item) =>
+    (item.match || []).some((m) =>
+      m.startsWith("exact:") ? pageUrl === m.slice(6) : pageUrl.includes(m),
+    ),
+  );
+
+  // Sort a tag list into the editorial order from src/data/categories.js.
+  // Anything not in that list keeps its alphabetical position, after the
+  // ordered ones — so a new tag appears in the pills without a data edit.
+  eleventyConfig.addFilter("orderTags", (tags, order = []) => {
+    const rank = (t) => {
+      const i = order.indexOf(t);
+      return i === -1 ? order.length : i;
+    };
+    return [...(tags || [])].sort((a, b) => rank(a) - rank(b));
+  });
+
   eleventyConfig.addShortcode("year", () => `${new Date().getFullYear()}`);
 
   md = new MarkdownIt({

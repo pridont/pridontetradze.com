@@ -1,0 +1,6 @@
+{# Contact list, shared by the homepage "find me" section and the mobile menu.
+   The email goes through the mailLink shortcode, which splits it across data
+   attributes so it is not sitting in the raw HTML for harvesters. #}
+<li>{% mailLink site.contact.email, "mail" %}</li>
+<li><a href="{{ site.contact.linkedin }}">linkedin</a></li>
+<li><a href="{{ site.contact.github }}">github</a></li>

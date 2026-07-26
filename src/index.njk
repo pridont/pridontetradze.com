@@ -14,8 +14,8 @@ image: "/assets/images/cover.jpg"
         I like
         <span class="hl-green">learning</span>,
         <span class="hl-blue">creating</span>, and
-        <span class="hl-plum">teaching</span>. I keep this corner of the
-        internet as a small treat for whoever happens to wander in.
+        <span class="hl-plum">teaching</span>. I keep this small corner of the
+        internet to share my thoughts and work.
       </p>
     </div>
   </section>
@@ -39,32 +39,16 @@ image: "/assets/images/cover.jpg"
   <section class="section">
     <div class="section__index">02 — works</div>
     <div class="section__body">
+      {# Numbers come from the loop, not the data — reordering src/data/works.js
+         does not mean renumbering by hand. #}
       <ol class="works">
+        {%- for work in works %}
         <li class="work">
-          <span class="work__num">01</span>
-          <a class="work__name" href="https://angular.pridontetradze.com">angular guide</a>
-          <span class="work__tag">angular · guide</span>
+          <span class="work__num">{{ "0" + loop.index if loop.index < 10 else loop.index }}</span>
+          <a class="work__name" href="{{ work.url }}">{{ work.name }}</a>
+          <span class="work__tag">{{ work.tag }}</span>
         </li>
-        <li class="work">
-          <span class="work__num">02</span>
-          <a class="work__name" href="https://primordialsoup.info">primordial soup</a>
-          <span class="work__tag">essays</span>
-        </li>
-        <li class="work">
-          <span class="work__num">03</span>
-          <a class="work__name" href="/blog/">blog</a>
-          <span class="work__tag">writing</span>
-        </li>
-        <li class="work">
-          <span class="work__num">04</span>
-          <a class="work__name" href="/music/">music</a>
-          <span class="work__tag">audio</span>
-        </li>
-        <li class="work">
-          <span class="work__num">05</span>
-          <a class="work__name" href="/cats/">cat gallery</a>
-          <span class="work__tag">photos</span>
-        </li>
+        {%- endfor %}
       </ol>
     </div>
   </section>
@@ -73,9 +57,7 @@ image: "/assets/images/cover.jpg"
     <div class="section__index">03 — find me</div>
     <div class="section__body">
       <ul class="findme">
-        <li>{% mailLink cv.contact.email, "mail" %}</li>
-        <li><a href="{{ cv.contact.linkedin }}">linkedin</a></li>
-        <li><a href="{{ cv.contact.github }}">github</a></li>
+        {%- include "find-me.njk" -%}
       </ul>
     </div>
   </section>

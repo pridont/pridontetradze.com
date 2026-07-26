@@ -37,7 +37,7 @@ layout: "base.njk"
           <div class="citation-box">
             <p>
               {{ author | citeAuthor }} ({{ page.date | citeYear }}).
-              <strong>{{ title }}</strong>. pridontetradze.com. Retrieved from
+              <strong>{{ title }}</strong>. {{ site.domain }}. Retrieved from
               {{ page.url | absoluteUrl(site.url) }}
             </p>
           </div>
