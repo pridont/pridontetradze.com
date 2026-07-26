@@ -9,9 +9,13 @@ const markdownItBiblatex = require("@arothuis/markdown-it-biblatex");
 const mdAnchor = require("markdown-it-anchor");
 const mdTableOfContents = require("markdown-it-table-of-contents");
 const mdHighlightjs = require("markdown-it-highlightjs");
+const mdFootnote = require("markdown-it-footnote");
 const linksPlugin = require("./lib/md-plugins/links");
 const bibListPlugin = require("./lib/md-plugins/bib-list.js");
+const citeTooltipPlugin = require("./lib/md-plugins/cite-tooltip.js");
 const lazyImagesPlugin = require("./lib/md-plugins/lazy-images.js");
+const figuresPlugin = require("./lib/md-plugins/figures.js");
+const codeTitlePlugin = require("./lib/md-plugins/code-title.js");
 const images = require("./lib/images.js");
 
 module.exports = function (eleventyConfig) {
@@ -198,7 +202,6 @@ module.exports = function (eleventyConfig) {
   // body column. Content before the first heading becomes an "intro" section.
   eleventyConfig.addFilter("articleLedger", (html) => {
     if (!html) return "";
-    const pad = (n) => String(n).padStart(2, "0");
     let content = String(html);
     const sections = [];
 
@@ -214,6 +217,21 @@ module.exports = function (eleventyConfig) {
       },
     );
 
+    // Same treatment for the footnote block markdown-it-footnote appends: it
+    // becomes the "notes" ledger row that sits between the body and the
+    // references. Only the <ol> is kept — the plugin's <hr> and <section>
+    // wrapper both become redundant once the row's own rule and heading are
+    // doing that job.
+    let notes = "";
+    content = content.replace(
+      /<hr class="footnotes-sep">\s*<section class="footnotes">([\s\S]*?)<\/section>/,
+      (m, inner) => {
+        notes = (inner.match(/<ol class="footnotes-list">[\s\S]*<\/ol>/) ||
+          [])[0] || "";
+        return "";
+      },
+    );
+
     const parts = content.split(/(<h2\b[^>]*>[\s\S]*?<\/h2>)/g);
 
     const intro = parts[0] || "";
@@ -221,19 +239,17 @@ module.exports = function (eleventyConfig) {
       sections.push(
         '<section class="section">' +
           '<div class="section__index">' +
-          '<p class="section__eyebrow" aria-hidden="true">00 — intro</p>' +
+          '<p class="section__eyebrow" aria-hidden="true">intro</p>' +
           "</div>" +
           `<div class="section__body prose">${intro}</div>` +
           "</section>",
       );
     }
 
-    let n = 0;
     for (let i = 1; i < parts.length; i += 2) {
-      n += 1;
       const heading = (parts[i] || "").replace(
         /^<h2\b/,
-        `<h2 class="section__heading" data-num="${pad(n)}"`,
+        '<h2 class="section__heading"',
       );
       const body = parts[i + 1] || "";
       sections.push(
@@ -244,8 +260,19 @@ module.exports = function (eleventyConfig) {
       );
     }
 
+    // Notes before references, matching the design's reading order.
+    if (notes) {
+      sections.push(
+        '<section class="section" aria-label="Notes">' +
+          '<div class="section__index">' +
+          '<p class="section__eyebrow" aria-hidden="true">notes</p>' +
+          "</div>" +
+          `<div class="section__body prose footnotes">${notes}</div>` +
+          "</section>",
+      );
+    }
+
     if (bibliography) {
-      n += 1;
       const bibId =
         (bibliography.match(/class="bibliography-title"[^>]*id="([^"]+)"/) ||
           [])[1] || "references";
@@ -263,7 +290,7 @@ module.exports = function (eleventyConfig) {
       sections.push(
         '<section class="section">' +
           '<div class="section__index">' +
-          `<h2 class="section__heading" data-num="${pad(n)}" id="${bibId}"><a href="#${bibId}">${titleText}</a></h2>` +
+          `<h2 class="section__heading" id="${bibId}"><a href="#${bibId}">${titleText}</a></h2>` +
           "</div>" +
           `<div class="section__body prose bibliography">${list}</div>` +
           "</section>",
@@ -334,11 +361,25 @@ module.exports = function (eleventyConfig) {
     containerClass: "table-of-contents",
   });
 
+  md.use(mdFootnote);
+
+  // markdown-it-footnote's own caption is "[1]"; the design sets the marker as
+  // a bare superscript numeral, with the accent colour doing the work the
+  // brackets would otherwise do.
+  md.renderer.rules.footnote_caption = (tokens, idx) =>
+    String(Number(tokens[idx].meta.id + 1));
+
   md.use(linksPlugin);
   md.use(bibListPlugin);
+  md.use(citeTooltipPlugin);
   md.use(lazyImagesPlugin);
+  md.use(figuresPlugin);
 
   md.use(mdHighlightjs, { auto: false });
+
+  // After the highlighter, which wraps renderer.rules.fence itself — see the
+  // note in lib/md-plugins/code-title.js.
+  md.use(codeTitlePlugin);
 
   eleventyConfig.setLibrary("md", md);
 

@@ -29,7 +29,7 @@ and just conditionally render them with the data you have been provided with fro
 
 Suppose this is the data you get from some `ComponentsService.getComponents()` method:
 
-```json
+```json components.json
 {
   "components": [
     {
@@ -51,7 +51,7 @@ Suppose this is the data you get from some `ComponentsService.getComponents()` m
 
 In the parent component you would do something like this:
 
-```ts
+```ts app.component.ts
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -130,7 +130,7 @@ In our case, we simply have `components.json` file in the `public` folder which 
 
 Let's look at the type definitions first. This is what `component-response.ts` looks like:
 
-```ts
+```ts component-response.ts
 import { InjectionToken } from '@angular/core';
 
 // It's a generic just to show that it can be turned into something more elaborate
@@ -158,9 +158,7 @@ We also defined the `data` property which will be set on the component inputs.
 
 Let's take a look at our components:
 
-feed.component.ts
-
-```ts
+```ts feed.component.ts
 import { Component, Input } from '@angular/core';
 
 export interface Post {
@@ -189,9 +187,7 @@ export class FeedComponent {
 }
 ```
 
-news.component.ts
-
-```ts
+```ts news.component.ts
 import { Component, Input } from '@angular/core';
 
 @Component({
@@ -209,9 +205,7 @@ export class NewsComponent {
 }
 ```
 
-weather.component.ts
-
-```ts
+```ts weather.component.ts
 import { Component, Input } from '@angular/core';
 
 @Component({
@@ -233,7 +227,7 @@ export class WeatherComponent {
 
 All these component class definitions are then used in the `component-tokens.ts` to create injection tokens.
 
-```ts
+```ts component-tokens.ts
 import { InjectionToken } from '@angular/core';
 
 export const WEATHER_COMPONENT = new InjectionToken('WeatherComponent', {
@@ -270,7 +264,7 @@ All the available tokens are then listed out in the `COMPONENT_TOKENS` array, so
 
 Let's take a look at the `components.service.ts` where we use this list of tokens.
 
-```ts
+```ts components.service.ts
 /* ... */
 import { COMPONENT_TOKENS } from './component-tokens';
 import { ComponentsResponse, FacadeComponent } from './component-response';
@@ -308,7 +302,7 @@ If we cannot find a suitable token for the given component id, we filter it out 
 
 Finally, we take this service and use it to render the components in the main component (in this case, `AppComponent`):
 
-```ts
+```ts app.component.ts
 /* ... */
 import { ComponentsService } from './components/components.service';
 import { ComponentClass, FacadeComponent } from './components/component-response';

@@ -12,10 +12,6 @@
   margin: 0;
 }
 
-.section__heading::before {
-  content: attr(data-num) " — ";
-}
-
 .section__heading a {
   color: inherit;
   text-decoration: none;
@@ -225,6 +221,57 @@
   color: inherit;
 }
 
+/* A fence that named a file (```ts dynamic-host.ts) gains a header bar. The
+   wrapper takes over the frame so the two read as one object, which means
+   unwinding the border, radius and margin .prose pre sets for a bare fence. */
+.code-block {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-code);
+  margin: 1.75rem 0;
+  overflow: hidden;
+}
+
+.code-block__name {
+  padding: 0.55rem 1rem;
+  background: var(--panel);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: var(--tracking-mono);
+  color: var(--muted);
+}
+
+.prose .code-block pre {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+/* ---- Figures ---- */
+/* Caption sits beneath the frame, mono, numbered in the accent colour.
+   Never italic, never centred. */
+.prose figure {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1.75rem 0;
+}
+
+.prose figcaption {
+  display: flex;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  line-height: 1.6;
+  text-align: left;
+  color: var(--muted);
+}
+
+.prose .figure__num {
+  flex: none;
+  color: var(--accent);
+}
+
 /* ---- Table of contents (card) ---- */
 .table-of-contents {
   border: 1px solid var(--rule-strong);
@@ -266,12 +313,83 @@
 }
 
 /* ---- Footnotes ---- */
+/* The marker is a bare numeral (see the footnote_caption override in
+   .eleventy.js) — the accent carries it, so no brackets. */
+.prose .footnote-ref a {
+  font-size: 0.7em;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.prose .footnote-ref a:hover {
+  color: var(--fg);
+}
+
+/* The notes themselves are their own ledger row ("notes" in the margin), built
+   by the articleLedger filter — the row's rule and heading replace the <hr>
+   and <section> markdown-it-footnote wraps them in. */
 .footnotes {
-  border-top: 1px solid var(--rule);
-  margin-top: 3rem;
-  padding-top: 1.5rem;
-  font-size: 0.95rem;
+  counter-reset: footnote;
+}
+
+.footnotes .footnotes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footnotes .footnote-item {
+  display: grid;
+  grid-template-columns: 1.75rem minmax(0, 1fr);
+  gap: 0.5rem;
+  margin: 0;
+  counter-increment: footnote;
+}
+
+/* Everything real is column two, so a note that runs to a second paragraph
+   doesn't wrap back under the number. */
+.footnotes .footnote-item > * {
+  grid-column: 2;
+  margin: 0;
+  font-size: var(--fs-small);
+  line-height: 1.6;
   color: var(--muted);
+}
+
+.footnotes .footnote-item > * + * {
+  margin-top: 0.6rem;
+}
+
+.footnotes .footnote-item::before {
+  content: counter(footnote);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: 600;
+  /* Optically seats the small mono numeral on the note's first text line. */
+  line-height: 1.9;
+  color: var(--accent);
+}
+
+/* Arriving from a marker: say which note you landed on, the same way a
+   section heading announces itself. */
+.footnotes .footnote-item:target {
+  outline: 1px solid var(--accent);
+  outline-offset: 8px;
+  border-radius: 4px;
+}
+
+.footnotes .footnote-backref {
+  margin-left: 0.35rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.footnotes .footnote-backref:hover {
+  color: var(--accent);
 }
 
 /* ---- Bibliography / references ---- */
@@ -410,9 +528,6 @@
     color: #000;
     margin: 1.5rem 0 0.5rem;
   }
-  .section__heading::before {
-    content: none;
-  }
   .section__eyebrow {
     display: none;
   }
@@ -464,9 +579,32 @@
     background: none !important;
   }
 
+  .code-block {
+    border: 1px solid #999;
+    border-radius: 0;
+  }
+  .code-block__name {
+    background: none;
+    border-bottom: 1px solid #999;
+    font-family: monospace;
+    color: #000;
+  }
+
   .prose img {
     border: none;
     border-radius: 0;
+  }
+
+  .prose figcaption,
+  .prose .figure__num,
+  .footnotes .footnote-item > *,
+  .footnotes .footnote-item::before {
+    font-family: monospace;
+    color: #000;
+  }
+
+  .footnotes .footnote-backref {
+    display: none;
   }
 
   .table-of-contents {
@@ -485,6 +623,9 @@
   .prose pre,
   .prose img,
   .prose blockquote,
+  .prose figure,
+  .code-block,
+  .footnotes .footnote-item,
   .csl-entry {
     break-inside: avoid;
   }

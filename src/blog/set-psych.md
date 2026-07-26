@@ -198,8 +198,7 @@ On the first level, we encounter an _impulsive_ behavior. The behavior is, in th
 
 If we were to display the first level of activity on a chart, it would look like this:
 
-![](/assets/images/set-chart.svg)
-
+![Need, object and operational capacity feed into set, which in turn mediates feeling and behavior; only the set's link to the object runs one way.](/assets/images/set-chart.svg)
 Structure of the first level of psychic activity [@nadirashvili83{translated from}].
 
 The set is directly related to all of its three factors, as well as the feeling – the experience that comes from external reality – and behavior. At the same time, it mediates all of them. Only the set’s relation with the object is not direct from both directions. The object is directly reflected in the set, but the set can only influence the object through behavior. At the same time, the object’s interaction with the set is not isolated because the corresponding need and operational capacity must be active.

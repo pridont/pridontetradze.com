@@ -81,9 +81,7 @@ npm install @ngrx/effects @ngrx/store @ngrx/store-devtools
 
 დავარეგისტრიროთ ისინი მოდულში:
 
-app.module.ts
-
-```ts
+```ts app.module.ts
 // ... other imports
 import { StoreModule } from "@ngrx/store";
 import { StoreDevtoolsModule } from "@ngrx/store-devtools";
@@ -121,9 +119,7 @@ src/app/store
 
 ექშენების ფოლდერში შევქმნათ todo.actions.ts. ახლა დავფიქრდეთ იმაზე, თუ რა მოქმედებები შეიძლება განახორციელოს მომხმარებელმა. მომხმარებელს უნდა შეეძლოს ნივთების ნახვა, ახალი ნივთის დამატება, მისი წაშლა ან შეცვლა.
 
-store/actions/todo.actions.ts
-
-```ts
+```ts store/actions/todo.actions.ts
 import { createAction, props } from "@ngrx/store";
 import { Item } from "src/app/item.model";
 
@@ -149,9 +145,7 @@ export const getItems = createAction("[Todo Page] Get Items");
 
 ექშენმა უნდა გაიაროს რედიუსერი და ეფექტები. რედიუსერი გვინდა სთეითის უშუალოდ შესაცვლელად, ხოლო ეფექტები API-სთან დასაკავშირებლად. API-სთან ურთიერთობაში ჩვენ ხშირად ორი ტიპის ექშენი გვაქვს: წარმატების და ერორის ექშენები. თითოეული მომხარებლის ექშენის საფუძველზე, რომელიც API-სთან კავშირს საჭიროებს, ეფექტები საპასუხოდ გასცემენ ამ ექშენებს. მათთვის ცალკე ფაილში გავწეროთ ექშენები:
 
-store/actions/todo-api.actions.ts
-
-```ts
+```ts store/actions/todo-api.actions.ts
 import { createAction, props } from "@ngrx/store";
 import { Item } from "src/app/item.model";
 
@@ -198,18 +192,14 @@ export const deleteItemFailed = createAction(
 
 სილამაზისთვის იმავე ფოლდერში index.ts შევქმნათ, საიდანაც დავაექსპორტებთ ყველა ექშენს, რომელიც ექშენების ერთი ფოლდერში იქნება ნეიმსფეისით ([Namespace](https://developer.mozilla.org/en-US/docs/Glossary/Namespace)), TodoActions ხოლო მეორეში TodoApiActions. ასე მოვიქცევით სთორის ყველა ელემენტისთვის.
 
-store/actions/index.ts
-
-```ts
+```ts store/actions/index.ts
 export * as TodoActions from "./todo.actions";
 export * as TodoApiActions from "./todo-api.actions";
 ```
 
 მაგალითად, ახალი ნივთის შექმნის ექშენმა (`addItem`) უშუალოდ სთეითში მხოლოდ ის უნდა ასახოს, რომ მიმდინარეობს API-სგან პასუხის მოლოდინი. ამის შემდეგ, ეფექტებმა უნდა დააფიქსირონ ეს ექშენი, მოთხოვნა გაგზავნონ სერვერზე და გასცენ ახალი ექშენი `addItemSuccessful`, რომელის prop-საც რედიუსერი სთეითში განათავსებს. ჯერ ნივთების აღების ექშენსა და მოლოდინის სთეითს მივხედოთ. შევქმნათ ჩვენი აპლიკაციის სთეითის ტიპი, რომლითაც რედიუსერი იხელმძღვანელებს:
 
-store/state/todo.state.ts
-
-```ts
+```ts store/state/todo.state.ts
 import { Item } from "src/app/item.model";
 
 export interface TodoState {
@@ -222,17 +212,13 @@ export interface TodoState {
 სთეითში გვინდა ნივთების სია, ჩატვირთვა მიმდინარეობს თუ არა და არსებობს თუ არა ერორი.
 ესეც დავაექსპორტოთ index.ts-დან.
 
-store/state/index.ts
-
-```ts
+```ts store/state/index.ts
 export * from "./todo.state";
 ```
 
 ახლა შევქმნათ რედიუსერი:
 
-store/state/reducers/todo.reducer.ts
-
-```ts
+```ts store/state/reducers/todo.reducer.ts
 import { createReducer, on } from "@ngrx/store";
 import { TodoActions } from "../actions";
 import { TodoState } from "../state";
@@ -265,15 +251,11 @@ export const todoReducer = createReducer(
 ქოლბექ ფუნქციაში ვაბრუნებთ სთეითს დასპრედილი ფორმით, რათა ყოველმა ახალმა ექშენმა შეინარჩუნოს და არ წაშალოს წინა სთეითი. მას შემდეგ ობიექტში ჩვენთვის სასურველ სთეითის ნაწილებს მნიშვნელობას შევუცვლით. როცა მომხმარებელი ნივთების მიღების ექშენს განახორციელებს, ჩვენ უნდა გამოვაჩინოთ მოლოდინის მდგომარეობა, მაშასადამე loading-ს გავხდით ჭეშმარიტს. ამის საფუძველზე ჩვენ უნდა გამოვაჩინოთ ვებ-გვერდზე ჩატვირთვის სპინერი. ნივთების წარმატებით მიღების შემთხვევაში, ჩვენ უნდა ამ ექშენის props-იდან მიღებული ახალი ნივთი სთეითში განვათავსოთ, ხოლო loading გავხადოთ მცდარი.
 მაგრამ როგორ ავიღოთ loading ფროფერთი ან items სთეითიდან? სელექტორების საშუალებით! მაგრამ ჯერ ჩვენი რედიუსერი დავარეგისტრიროთ მოდულში, რათა ანგულარმა ის დააფიქსიროს.
 
-store/state/reducers/index.ts
-
-```ts
+```ts store/state/reducers/index.ts
 export * from "./todo.reducer";
 ```
 
-app.module.ts
-
-```ts
+```ts app.module.ts
 // ... other imports
 import { StoreModule } from "@ngrx/store";
 import { todoReducer } from "./store/reducers";
@@ -295,9 +277,7 @@ export class AppModule {}
 
 ჩვენ ანგულარს ვეუბნებით, რომ ვარეგისტრირებთ რედიუსერს, რომელიც ასოცირებული იქნება სახელთან "todo". ეს უკანასკნელი დაგვჭირდება სელექტორების შესაქმნელად.
 
-store/state/selectors/todo.selectors.ts
-
-```ts
+```ts store/state/selectors/todo.selectors.ts
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { TodoState } from "../state";
 
@@ -323,9 +303,7 @@ export const selectError = createSelector(
 
 ახლა გამოვიყენოთ selectLoading app.component-ში და ამასთანავე, გავცეთ ექშენი. ყველაფერი ზედმეტი წავშალოთ.
 
-app.component.ts
-
-```ts
+```ts app.component.ts
 /// ... other imports
 import { Store } from "@ngrx/store";
 import { TodoActions } from "./store/actions";
@@ -351,9 +329,7 @@ export class AppComponent implements OnInit {
 
 თემფლეითში შეგვიძლია observable-ებს მოვუსმინოთ `ngIf` დირექტივში, async ფაიფის საშუალებით. ეს ფაიფი ავტომატურად დაასუბსქრაიბებს ამ observable-ს და საჭიროების შემთხვევაში სუბსქრაიბს გააუქმებს კიდევაც (ts-ში ამის ხელით წერას ფაიფი ნამდვილად ჯობია!):
 
-app.component.html
-
-```html
+```html app.component.html
 <div class="container">
   <app-input></app-input>
   <ng-container *ngIf="error$ | async as error">
@@ -378,9 +354,7 @@ app.component.html
 
 აშკარა პრობლემა გვაქვს: ნივთები ჯერ არ გამოჩენილა, რადგან საწყის სთეითში ის ცარიელია, ჩვენ კი API-სთვის არ დაგვიძახებია, რომ ისინი აგვეღო. მაშ, შევქმნათ ეფექტები! ჯერ ItemsService-ში `tap` ოპერატორები და ზედმეტი ცვლადები მოვაშოროთ. ისინი აღარ დაგვჭირდება.
 
-items.service.ts
-
-```ts
+```ts items.service.ts
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map } from "rxjs";
@@ -424,9 +398,7 @@ export class ItemsService {
 
 ახლა კი შევქმნათ ეფექტები:
 
-store/state/effects/todo.effects.ts
-
-```ts
+```ts store/state/effects/todo.effects.ts
 import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
@@ -460,17 +432,13 @@ export class TodoEffects {
 
 არ შეგეშინდეთ, RxJs თქვენი მეგობარია! ჩვენ ვქმნით ეფექტების კლასს, რომელზეც უნდა გამოვიყენოთ `@injectable()` დეკორატორი (რადგან ის სერვისივით მუშაობს). კლასში განვსაზღვრავთ ეფექტებს, რომლებიც ფაქტობრივად subscription-ებია. ისინი `createEffect` ფუნქციით იქმნება. ქოლბექში ჩვენ ვასუბსქრაიბებთ ექშენების სტრიმს, რომელსაც სთორი გვაწვდის Actions-ის სახით. ჩვენ სტრიმი უნდა გავფილტროთ, რადგან `getItems$` ეფექტმა მხოლოდ ერთი ექშენზე უნდა მოახდინოს რეაგირება - `TodoActions.getItems`. `pipe` ოპერატორში სწორედ ამიტომ ვიყენებთ `ofType` ოპერატორს. შემდეგ, `mergeMap`-ის საშუალებით ჩვენ დავაბრუნებთ სერვისის API-სთან დაძახებას, სადაც ჩვენ გვინდა, რომ `map` ოპერატორით ამოვიღოთ სერვერიდან მოსული პასუხი (ნივთები) და ის ჩვენი TodoApiActions-ის ექშენს გადავცეთ, რომელსაც `observable`-ის ფორმით ვაბრუნებთ. `catchError`-ს ჩვენ სერვისზე დაძახებულ `pipe` ოპერატორში `map`-ის შემდეგ ვიყენებთ, რათა წარუმატებელობის შემთხვევაში აღვრიცხოთ, რა სახის ერორი დაგვიბრუნა სერვერმა. ეს ერორი HttpErrorResponse-ის ტიპისაა ამ პროექტის შემთხვევაში. ამ ერორის მესიჯს ჩვენ გამოვიყენებთ ექშენში ერორის ტექსტის შესაქმნელად, რომელსაც ჩვენ `of` ოპერატორში ვატარებთ, რადგან catchError თვითონ observable-ს არ აბრუნებს, რაც ეფექტისთვისაა საჭირო. `of` ოპერატორი სწორედაც observable-ში შეფუთულ ექშენს დაგვიბრუნებს.
 
-store/state/effects/index.ts
-
-```ts
+```ts store/state/effects/index.ts
 export * from "./todo.effects";
 ```
 
 ახლა დავარეგისტრიროთ ჩვენი ეფექტები მოდულში:
 
-app.module.ts
-
-```ts
+```ts app.module.ts
 /// ... other imports
 import { StoreModule } from "@ngrx/store";
 import { todoReducer } from "./store/reducers";
@@ -499,9 +467,7 @@ export class AppModule {}
 
 ძირითადი ლოგიკა, რომელიც სთორს ეხება უნდა იყოს განთავსებული ერთ კონტეინერ კომპონენტში, მას შიგნით არსებული პატარა კომპონენტები კი უბრალოდ მონაცემებს იღებენ ზედა კომპონენტიდან, მას თემფლეითში განათავსებენ და უბრალოდ ივენთებს აემითებენ. ასერომ მოვაშოროთ სერვისებთან დაკავშირებული ლოგიკა input კომპონენტიდან და item კომპონენტიდან.
 
-input/input.component.ts
-
-```ts
+```ts input/input.component.ts
 import { Component, EventEmitter, Output } from "@angular/core";
 
 @Component({
@@ -522,9 +488,7 @@ export class InputComponent {
 }
 ```
 
-item/item.component.ts
-
-```ts
+```ts item/item.component.ts
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Item } from "../item.model";
 
@@ -550,9 +514,7 @@ export class ItemComponent {
 
 კონტეინერ კომპონენტში, ანუ app.component.html-ში, მოვუსმინოთ ამ კომპონენტების ივენთებს:
 
-app.component.html
-
-```html
+```html app.component.html
 <div class="container">
   <app-input (newItem)="onNewItem($event)"></app-input>
   <ng-container *ngIf="error$ | async as error">
@@ -576,9 +538,7 @@ app.component.html
 
 და სათანადო ექშენები გავცეთ ივენთების მიხედვით, რომლებსაც სათანადო prop-ებს გავატანთ:
 
-app.component.ts
-
-```ts
+```ts app.component.ts
 import { Component, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { Item } from "./item.model";
@@ -619,9 +579,7 @@ export class AppComponent implements OnInit {
 
 ახლა რედიუსერში დავწეროთ რა უნდა მოხდეს დანარჩენი ექშენების შემთხვევაში:
 
-store/reducers/todo.reducers.ts
-
-```ts
+```ts store/reducers/todo.reducers.ts
 import { createReducer, on } from "@ngrx/store";
 import { TodoActions, TodoApiActions } from "../actions";
 import { TodoState } from "../state";
@@ -698,9 +656,7 @@ export const todoReducer = createReducer(
 
 ნივთის წაშლის წარმატებულად დამთავრების შემთხვევაში ნივთის ამოსაშლელად TodoUtils-ში შექმნილ ფუნქციას ვიყენებთ, რათა რედიუსერი რთული წასაკითხი არ გახდეს:
 
-store/util/todo.utils.ts
-
-```ts
+```ts store/util/todo.utils.ts
 import { Item } from "src/app/item.model";
 
 export class TodoUtils {
@@ -715,9 +671,7 @@ export class TodoUtils {
 
 რა თქმა უნდა, ეს სამი ახალი ექშენი კომპონენტში უბრალოდ ჩატვირთვის სპინერს გაგვიჩენს აპლიკაციაში, რადგან მათთვის ეფექტები ჯერ არ დაგვიწერია. ასე უნდა გამოიყურებოდეს ეფექტების მთლიანი კოდი:
 
-store/effects/todo.effects.ts
-
-```ts
+```ts store/effects/todo.effects.ts
 import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";

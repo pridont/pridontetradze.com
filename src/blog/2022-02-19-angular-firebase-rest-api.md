@@ -66,9 +66,7 @@ fromEvent(document, "click")
 
 უპირველეს ყოვლისა შევიდეთ [firebase-ზე](https://firebase.google.com/), შევქმნათ ექაუნთი (თუ არ გვაქვს) და გადავინაცვლოთ კონსოლზე (Go to console). აქ შეგვიძლია შევქმნათ ახალი პროექტი. ჩვენი პოროექტის გვერდზე ვერტიკალური მენიუდან გადავინაცვლოთ realtime database-ზე და შევქმნათ ბაზა სატესტო რეჟიმში. სატესტო რეჟიმი გულისხმობს, რომ გარკვეული პერიოდი ნებისმიერ ადამიანს, ვისაც წვდომა აქვს ჩვენს ენდფოინთზე, შეუძლია მონაცემების აღება და ჩაწერა. ჩვენ უნდა ვხედავდეთ ცარიელ მონაცემთა ბაზას და აქვე უნდა მოცემული გვქონდეს ჩვენი API-ს URL რომელიც შეგვიძლია დავაკოპიროთ და ჩვენს ფრონტენდში შევინახოთ.
 
-environments/environment.ts
-
-```ts
+```ts environments/environment.ts
 export const environment = {
   production: false,
   baseUrl: "https://firebase-api-url/",
@@ -108,9 +106,7 @@ export class AppModule {}
 
 ახლა შეგვიძლია ჩვენს სერვისში დავაინჯექთოთ HttpClient, რომელიც წვდომას მოგვცემს ჩვენთვის საჭირო ფუნქციებზე.
 
-app/items.service.ts
-
-```ts
+```ts app/items.service.ts
 // other imports ...
 import { HttpClient } from "@angular/common/http";
 import { environment } from "src/environments/environment";
@@ -129,9 +125,7 @@ export class ItemsService {
 
 შევინახოთ ახალი ნივთი მონაცემთა ბაზაში. ამისათვის, ჩვენს სერვისში `addItem` მეთოდის შიგნით არსებული ლოგიკა ჩავანაცვლოთ შემდეგით:
 
-app/items.service.ts
-
-```ts
+```ts app/items.service.ts
 addItem(newItemDesc: string) {
     const newItem = {
       description: newItemDesc,
@@ -163,9 +157,7 @@ addItem(newItemDesc: string) {
 
 რამდენიმეჯერ კიდევ შევქმნათ ახალი ნივთი, რათა ბაზაში გვქონდეს ერთზე მეტი გასაკეთებელი საქმე. ბაზაში ვხედავთ, რომ გვაქვს todos ობიექტი ბევრი უნიკალური ფროფერთით. ამის გამო მოგვიწევს, რომ განვაახლოთ ჩვენი ნივთის მოდელი და დავამატოთ ახალი ფროფერთი, `key`, რომელშიც შეინახება ყოველი ნივთის key:
 
-app/item.model.ts
-
-```ts
+```ts app/item.model.ts
 export interface Item {
   description: string;
   done: boolean;
@@ -177,9 +169,7 @@ export interface Item {
 
 განვაახლოთ ჩვენი `getItems` მეთოდი სერვისში.
 
-app/items.service.ts
-
-```ts
+```ts app/items.service.ts
 import { map, Observable } from 'rxjs';
 // ... other code
   getItems(): Observable<Item[]> {
@@ -201,9 +191,7 @@ import { map, Observable } from 'rxjs';
 
 ჩვენ ვიყენებთ map ოპერატორს RxJS-დან, რომლითაც შეგვიძლია მიღებულ მონაცემებს მოდიფიკაცია გავუკეთოთ და ახლებური ფორმით დავაბრუნოთ, სანამ subscribe-ს გავაკეთებთ. ვინაიდან ჩვენ გვაქვს ობიექტი უნიკალური ფროფერთიებით, for of loop არ არ ივარგებს. ამიტომ, გამოვიყენოთ for in loop, რომლითაც ობიექტის თითოეული ფროფერთის სახელს ჩავწვდებით და ამის მიხედვით შევქმნათ array სადაც განვათავსებთ ნივთებს ჩვენი მოდელის მიხედვით. ნივთის `description` და `done` ფროფერთიები ყოველ ობიექტში არის უკვე მოცემული, ჩვენ უბრალუდ უნდა დავსპრედოთ (spread operation) ისინი და ამასთანავე დავამატოთ ახალი ფროფერთი `key`. საბოლოოდ შეგვიძლია უკვე დავაბრუნოთ ეს სია. თუ todos ბაზაში ცარიელია, მაშინ დავაბრუნოთ ცარიელი სია. თუ დააკვირდებით, აქ ჩვენ არ ვასუბსქრაიბებთ, მხოლოდ ვაბრუნებთ რექვესთს, რადგან შედეგი, რომელსაც მივიღებთ ამ რექვესთისგან გვჭირდება app.component.ts-ში. სწორედ იქ გამოვიყენებთ `subscribe`-ს.
 
-app/app.component.ts
-
-```ts
+```ts app/app.component.ts
 // ... other code
 export class AppComponent implements OnInit, OnDestroy {
   items: Item[];
@@ -224,9 +212,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
 ახლა შეგვიძლია დავუბრუნდეთ `addItem` მეთოდს. ჩვენ გვინდა, რომ ახალი ნივთის დამატებისას სიაც განახლდეს. ამისათვის სერვისში შევქმნით Subject-ს. ეს არის ერთგვარი Observable რომელსაც შეგვიძლია მოვუსმინოთ, როგორც ივენთს, `subscribe`-ის საშუალებით. თუკი ამ შექმნილ Subject-ზე დავუძახებთ next მეთოდს, იგი დააემითებს ჩვენთვის სასურველ ინფორმაციას, როგორც ივენთს. Subject-ს, ისევე როგორც Observable-ებს კონვენციურად სახელის ბოლოში $-ს უწერენ. აქვე ჩვენ მივუთითებთ, რომ ეს Subject დაგვიბრუნებს `Item`-ების სიას. ჩვენ შემდეგ შეგვიძლია განახლებული სია დავაემითოთ და მას მოვუსმინოთ app.component.ts-იდან, მაგრამ ჯერ სერვისის ლოგიკას მივხედოთ.
 
-app/items.service.ts
-
-```ts
+```ts app/items.service.ts
 import { map, Observable, tap, Subject } from "rxjs";
 
 @Injectable({ providedIn: "root" })
@@ -316,9 +302,7 @@ export class AppComponent implements OnInit, OnDestroy {
 firebase-ზე წაშლის მოთხოვნა იგზავნება URL-ში იმის დაზუსტებით, თუ ბაზაში მონაცემების რა ნაწილის წაშლა გვსურს. ჩვენ შემთხვევაში ესაა ობიექტი კონკრეტული Key-ით, რომელიც განთავსებულია todos ობიექტში.
 შესაბამისად ჩვენი მოთხოვნის ლინკი იქნება რაღაც ასეთი: `'https://<firebase-url>/todos/<key>.json'`.
 
-app/items.service.ts
-
-```ts
+```ts app/items.service.ts
   deleteItem(key: string): Observable<null> {
     return this.http.delete<null>(`${this.baseUrl}todos/${key}.json`).pipe(
       tap(() => {
