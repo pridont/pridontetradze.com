@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pridonwebsite",
+  "compatibility_date": "2026-07-28",
+  "assets": {
+    "directory": "public",
+    // 404.html exists in the build output; serve it for unmatched paths.
+    "not_found_handling": "404-page"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
