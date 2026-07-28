@@ -6,7 +6,8 @@
   "scripts": {
     "start": "eleventy --serve",
     "lab": "PALETTE_LAB=1 eleventy --serve",
-    "build": "eleventy"
+    "build": "eleventy",
+    "deploy": "pnpm run build && wrangler deploy"
   },
   "author": "",
   "license": "ISC",
@@ -21,7 +22,8 @@
     "markdown-it-anchor": "^8.6.7",
     "markdown-it-footnote": "^4.0.0",
     "markdown-it-highlightjs": "^4.0.1",
-    "markdown-it-table-of-contents": "^0.6.0"
+    "markdown-it-table-of-contents": "^0.6.0",
+    "wrangler": "^4.114.0"
   },
   "dependencies": {
     "wavesurfer.js": "^7.8.6"

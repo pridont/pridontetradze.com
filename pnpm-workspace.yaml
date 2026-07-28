@@ -1,8 +1,10 @@
 # pnpm blocks dependency build scripts by default. esbuild fetches its platform
 # binary and sharp its libvips prebuild — without those the eleventy build fails
-# on the script-bundling and eleventy-img steps. core-js-pure's postinstall is
-# only a funding notice, so it stays off.
+# on the script-bundling and eleventy-img steps. workerd is wrangler's runtime
+# and needs the same for `wrangler deploy`. core-js-pure's postinstall is only a
+# funding notice, so it stays off.
 allowBuilds:
   core-js-pure: false
   esbuild: true
   sharp: true
+  workerd: true
