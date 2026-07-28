@@ -1,5 +1,5 @@
 [build]
-  command = "bun run build"
+  command = "pnpm run build"
   publish = "public"
 [[redirects]]
   from = "/feed/"
