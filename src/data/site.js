@@ -8,7 +8,7 @@
 // Georgian &text= subset, and a motto it cannot see would fall back to a
 // system font.
 
-const domain = "pridontetradze.com";
+const domain = "tetradze.com";
 const url = `https://${domain}`;
 
 module.exports = {
