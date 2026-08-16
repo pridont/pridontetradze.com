@@ -111,6 +111,10 @@
 
   <link rel="canonical" href="{{ page.url | absoluteUrl(site.url) }}">
 
+  {% if tags and "post" in tags %}
+  <link rel="alternate" type="text/markdown" href="{{ page.url | replace(r/\/$/, "") }}.md">
+  {% endif %}
+
   {% if page.url === "/404.html" %}
     <meta name="robots" content="noindex, follow">
   {% endif %}
