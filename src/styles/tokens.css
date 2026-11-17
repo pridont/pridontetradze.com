@@ -10,6 +10,48 @@
  * category accents (tech/academic/personal), not literal hues.
  */
 
+/* Self-hosted fonts (src/fonts/, from Google Fonts). Same origin, so no extra
+ * connections, and served immutable for a year (see src/_headers) — the
+ * Google-hosted &text= Georgian subset was capped at a 1-day cache. Filenames
+ * carry the upstream version and subset: rename when swapping a file.
+ * Latin subset only: nothing in src/ uses latin-ext. Hanken and Noto Sans
+ * Georgian are variable fonts, so one file covers every weight.
+ *
+ * Both variable fonts are trimmed to the 400–700 weights the CSS uses, and
+ * Georgian to Mkhedruli + Mtavruli (Mtavruli because text-transform: uppercase
+ * on Georgian text renders it). Not the exact glyphs in use, so new posts and
+ * new uppercase labels never fall back. Regenerate with fonttools + brotli:
+ *   pyftsubset noto-georgian.woff2 --unicodes=U+10D0-10FF,U+1C90-1CBF --flavor=woff2 --output-file=geo.woff2
+ *   fonttools varLib.instancer geo.woff2 wght=400:700 -o out.woff2 */
+@font-face {
+  font-family: "Hanken Grotesk";
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/hanken-grotesk-v12-latin-400-700.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "DM Mono";
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/dm-mono-400-v16-latin.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "DM Mono";
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/dm-mono-500-v16-latin.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Noto Sans Georgian";
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/noto-sans-georgian-v49-mkhedruli-mtavruli-400-700.woff2) format("woff2");
+  unicode-range: U+10D0-10FF, U+1C90-1CBF;
+}
+
 :root {
   /* ---- Raw palette ------------------------------------------------------ */
   /* Ink — dark mode */
