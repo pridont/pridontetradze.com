@@ -258,6 +258,13 @@ a:hover {
 .site-footer {
   flex-shrink: 0;
   border-top: 1px solid var(--rule-strong);
+  /* Skip footer layout while it is off-screen. Besides the usual render
+     saving, this keeps the Mtavruli motto from requesting Noto Sans Georgian
+     during page load on non-Georgian pages, where it otherwise competes with
+     the LCP cover image (~150ms off simulated FCP/LCP). Short pages, where the
+     footer is visible at load, lay it out as normal. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 4.6rem;
 }
 
 .site-footer__inner {
