@@ -31,34 +31,10 @@
   </script>
 
   {# --- Fonts --- #}
-  {# Load Google Fonts non-render-blocking: the print media type keeps the
-     stylesheet off the critical path, then onload flips it to all. display=swap
-     paints fallback text immediately, so no new flash is introduced.
-
-     The rel=preload in front of each sheet is what makes that affordable.
-     media="print" on its own drops the request to the lowest fetch priority,
-     so the fonts arrive long after first paint and the swap is guaranteed to
-     be visible; the preload restores a normal priority without putting the
-     cross-origin request back on the critical path.
-
-     Two requests, not one: only the Georgian family can be usefully subset.
-     Both URLs are assembled in src/data/fonts.js — see the note there on the
-     &text= subset, which cuts Noto Sans Georgian from 41.5KB to 15.7KB on
-     every page. #}
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="{{ fonts.latin }}">
-  <link rel="stylesheet" href="{{ fonts.latin }}" media="print" onload="this.media='all'">
-  {%- if fonts.georgian %}
-  <link rel="preload" as="style" href="{{ fonts.georgian }}">
-  <link rel="stylesheet" href="{{ fonts.georgian }}" media="print" onload="this.media='all'">
-  {%- endif %}
-  <noscript>
-    <link rel="stylesheet" href="{{ fonts.latin }}">
-    {%- if fonts.georgian %}
-    <link rel="stylesheet" href="{{ fonts.georgian }}">
-    {%- endif %}
-  </noscript>
+  {# Self-hosted; @font-face lives in tokens.css (inlined below). The body
+     font is preloaded so it is fetched with the document rather than after
+     the inlined CSS is parsed and first layout finds a use for it. #}
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/hanken-grotesk-v12-latin-400-700.woff2" crossorigin>
 
   {# --- LCP cover --- #}
   {# Preloaded here rather than left for the parser to find in the article

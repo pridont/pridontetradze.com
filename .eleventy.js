@@ -20,6 +20,9 @@ const images = require("./lib/images.js");
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("./src/assets");
+  eleventyConfig.addPassthroughCopy("./src/fonts");
+  eleventyConfig.addPassthroughCopy("./src/_headers");
+  eleventyConfig.addPassthroughCopy("./src/_redirects");
   // Only the scripts loaded via <script src> need copying. main.js, theme/, and
   // palette/ are inlined (bundled by inlineJs from source).
   eleventyConfig.addPassthroughCopy({ "src/scripts/cats.js": "scripts/cats.js" });
